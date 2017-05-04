@@ -72,7 +72,6 @@ namespace LogIn.API.Controllers
                 Email = createUserModel.Email,
                 FirstName = createUserModel.FirstName,
                 LastName = createUserModel.LastName,
-                Level = 3,
                 JoinDate = DateTime.Now.Date,
             };
 
