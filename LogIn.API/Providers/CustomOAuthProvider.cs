@@ -45,12 +45,31 @@ namespace LogIn.API.Providers
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, "JWT");
             oAuthIdentity.AddClaims(ExtendedClaimsProvider.GetClaims(user));
-            oAuthIdentity.AddClaims(RolesFromClaims.CreateRolesBasedOnClaims(oAuthIdentity));
-           
-            var ticket = new AuthenticationTicket(oAuthIdentity, null);
-            
+            //oAuthIdentity.AddClaims(RolesFromClaims.CreateRolesBasedOnClaims(oAuthIdentity));
+            var props = new AuthenticationProperties(new Dictionary<string, string>
+                {
+                    {
+                        "FirstName", user.FirstName
+                    },
+                    {
+                        "LastName", user.LastName
+                    },
+
+                });
+
+            var ticket = new AuthenticationTicket(oAuthIdentity, props);
+
             context.Validated(ticket);
-           
+
+        }
+        public override Task TokenEndpoint(OAuthTokenEndpointContext context)
+        {
+            foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)
+            {
+                context.AdditionalResponseParameters.Add(property.Key, property.Value);
+            }
+
+            return Task.FromResult<object>(null);
         }
     }
 }

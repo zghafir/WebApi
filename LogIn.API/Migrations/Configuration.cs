@@ -10,7 +10,7 @@ namespace LogIn.API.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(LogInDBContext context)

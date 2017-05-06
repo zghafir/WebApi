@@ -7,6 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Net.Mail;
+using System.Net;
+using LogIn.API.Services;
 
 namespace LogIn.API.Controllers
 {
@@ -14,47 +17,6 @@ namespace LogIn.API.Controllers
     public class AccountsController : BaseApiController
     {
 
-        [Authorize(Roles = "Admin")]
-        [Route("users")]
-        public IHttpActionResult GetUsers()
-        {
-            //Only SuperAdmin or Admin can delete users (Later when implement roles)
-            var identity = User.Identity as System.Security.Claims.ClaimsIdentity;
-
-            return Ok(this.AppUserManagger.Users.ToList().Select(u => this.TheModelFactory.Create(u)));
-        }
-
-        [Authorize(Roles = "Admin")]
-        [Route("user/{id:guid}", Name = "GetUserById")]
-        public async Task<IHttpActionResult> GetUser(string Id)
-        {
-            //Only SuperAdmin or Admin can delete users (Later when implement roles)
-            var user = await this.AppUserManagger.FindByIdAsync(Id);
-
-            if (user != null)
-            {
-                return Ok(this.TheModelFactory.Create(user));
-            }
-
-            return NotFound();
-
-        }
-
-        [Authorize(Roles = "Admin")]
-        [Route("user/{username}")]
-        public async Task<IHttpActionResult> GetUserByName(string username)
-        {
-            //Only SuperAdmin or Admin can delete users (Later when implement roles)
-            var user = await this.AppUserManagger.FindByNameAsync(username);
-
-            if (user != null)
-            {
-                return Ok(this.TheModelFactory.Create(user));
-            }
-
-            return NotFound();
-
-        }
 
         [AllowAnonymous]
         [Route("create")]
@@ -87,10 +49,12 @@ namespace LogIn.API.Controllers
 
             var callbackUrl = new Uri(Url.Link("ConfirmEmailRoute", new { userId = user.Id, code = code }));
 
-            await this.AppUserManagger.SendEmailAsync(user.Id,
-                                                    "Confirm your account",
-                                                    "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
+
+            EmailService service = new EmailService();
+            var body = "Please confirm your account by clicking < a href =\"" + callbackUrl + "\">here</a>";
+            await service.sendmail("Confirm your account", body, user.Email);
+            //await service.sendmail("", "",);
             Uri locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
 
             return Created(locationHeader, TheModelFactory.Create(user));
@@ -139,33 +103,7 @@ namespace LogIn.API.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin")]
-        [Route("user/{id:guid}")]
-        public async Task<IHttpActionResult> DeleteUser(string id)
-        {
-
-            //Only SuperAdmin or Admin can delete users (Later when implement roles)
-
-            var appUser = await this.AppUserManagger.FindByIdAsync(id);
-
-            if (appUser != null)
-            {
-                IdentityResult result = await this.AppUserManagger.DeleteAsync(appUser);
-
-                if (!result.Succeeded)
-                {
-                    return GetErrorResult(result);
-                }
-
-                return Ok();
-
-            }
-
-            return NotFound();
-
-        }
-
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [Route("user/{id:guid}/roles")]
         [HttpPut]
         public async Task<IHttpActionResult> AssignRolesToUser([FromUri] string id, [FromBody] string[] rolesToAssign)
@@ -209,7 +147,7 @@ namespace LogIn.API.Controllers
 
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [Route("user/{id:guid}/assignclaims")]
         [HttpPut]
         public async Task<IHttpActionResult> AssignClaimsToUser([FromUri] string id, [FromBody] List<ClaimBindingModel> claimsToAssign)
@@ -241,7 +179,7 @@ namespace LogIn.API.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [Route("user/{id:guid}/removeclaims")]
         [HttpPut]
         public async Task<IHttpActionResult> RemoveClaimsFromUser([FromUri] string id, [FromBody] List<ClaimBindingModel> claimsToRemove)

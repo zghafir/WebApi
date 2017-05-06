@@ -3,7 +3,7 @@ namespace LogIn.API.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class CreateAspIdentityEntities : DbMigration
+    public partial class add_tables : DbMigration
     {
         public override void Up()
         {
@@ -37,6 +37,7 @@ namespace LogIn.API.Migrations
                         Id = c.String(nullable: false, maxLength: 128),
                         FirstName = c.String(nullable: false, maxLength: 100),
                         LastName = c.String(nullable: false, maxLength: 100),
+                        JoinDate = c.DateTime(nullable: false),
                         Email = c.String(maxLength: 256),
                         EmailConfirmed = c.Boolean(nullable: false),
                         PasswordHash = c.String(),

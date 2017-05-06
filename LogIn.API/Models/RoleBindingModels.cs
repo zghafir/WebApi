@@ -16,7 +16,8 @@ namespace LogIn.API.Models
 
     }
 
-    public class UsersInRoleModel {
+    public class UsersInRoleModel
+    {
 
         public string Id { get; set; }
         public List<string> EnrolledUsers { get; set; }

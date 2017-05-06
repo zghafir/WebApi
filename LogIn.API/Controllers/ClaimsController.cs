@@ -18,7 +18,10 @@ namespace LogIn.API.Controllers
                          {
                              subject = c.Subject.Name,
                              type = c.Type,
-                             value = c.Value
+                             value = c.Value,
+                             FirstName = c.Value,
+                             LastName = c.Value
+
                          };
 
             return Ok(claims);

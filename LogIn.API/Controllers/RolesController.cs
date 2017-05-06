@@ -2,12 +2,15 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 
 namespace LogIn.API.Controllers
 {
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles = "Admin")]
     [RoutePrefix("api/roles")]
     public class RolesController : BaseApiController
     {
@@ -83,7 +86,7 @@ namespace LogIn.API.Controllers
         public async Task<IHttpActionResult> ManageUsersInRole(UsersInRoleModel model)
         {
             var role = await this.AppRoleManager.FindByIdAsync(model.Id);
-            
+
             if (role == null)
             {
                 ModelState.AddModelError("", "Role does not exist");

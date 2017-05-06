@@ -36,8 +36,6 @@ namespace LogIn.API.AppConfig
                 RequireUppercase = true,
             };
 
-            //appUserManager.EmailService = new AspNetIdentity.WebApi.Services.EmailService();
-
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
