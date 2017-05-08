@@ -2,7 +2,7 @@
 //var serviceBase = 'http://loginwebapi.somee.com/';
 
 
-var app = angular.module('MyApp', ['ngRoute', 'LocalStorageModule']);
+var app = angular.module('MyApp', ['ngRoute', 'LocalStorageModule', 'vcRecaptcha']);
 
 app.config(function ($routeProvider) {
 
@@ -10,6 +10,7 @@ app.config(function ($routeProvider) {
         controller: "homeController",
         templateUrl: "/root/app/view/home.html"
     });
+
 
     $routeProvider.when("/login", {
         controller: "loginController",

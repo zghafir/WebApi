@@ -1,17 +1,21 @@
 ﻿(function () {
 
     'use strict';
-    app.controller('passPerduController', ['$scope', '$location', 'LoginService', 'AuthenticationService', function ($scope, $location, loginService, authenticationService) {
-        
+    app.controller('passPerduController', ['$scope', '$location', 'LoginService', 'AuthenticationService', 'vcRecaptchaService',
+        function ($scope, $location, loginService, authenticationService, vcRecaptchaService) {
+            var vm = this;
+            vm.publicKey = "6LeJcCAUAAAAAOibhC-9YkpZIbbjKtmx2G-XXyln";
+            
+
+
         $scope.GoTologin = function () {
             $location.path('/login');
         }
-        $scope.pass = {
-            "Email": ""
-        };
-
+        
+        
         $scope.getpass = function (form) {
-
+            var data = vcRecaptchaService.getResponse();
+            debugger;
             if (form.$valid)
                 loginService.getpass($scope.pass).then(function (response) {
                     debugger;

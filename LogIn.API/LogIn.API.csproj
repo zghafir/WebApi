@@ -210,6 +210,7 @@
     <Content Include="root\css\js\demo.js" />
     <Content Include="root\lib\angular\angular-animate.js" />
     <Content Include="root\lib\angular\angular-local-storage.min.js" />
+    <Content Include="root\lib\angular\angular-recaptcha.min.js" />
     <Content Include="root\lib\angular\angular-resource.js" />
     <Content Include="root\lib\angular\angular-route.js" />
     <Content Include="root\lib\angular\angular-sanitize.js" />
