@@ -118,7 +118,7 @@ namespace LogIn.API.Controllers
 
         [AllowAnonymous]
         [Route("passPerdu")]
-        public async Task<IHttpActionResult> ChangePassword(PassperdudBindingModel model)
+        public async Task<IHttpActionResult> sendPassword(PassperdudBindingModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -145,8 +145,11 @@ namespace LogIn.API.Controllers
             {
                 var code = await this.AppUserManagger.GeneratePasswordResetTokenAsync(user.Id);
 
+                var callbackUrl = new Uri(Url.Link("ChangePassword", new { userId = user.Id, code = code }));
+                
+
                 EmailService service = new EmailService();
-                var body = "votre pass est : " + code ;
+                var body = "Merci d'utiliser ce lien pour changer votre mot de pass : " + callbackUrl;
                 await service.sendmail("Reset Password", body, user.Email);
             }
 
