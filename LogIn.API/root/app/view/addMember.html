@@ -1,39 +1,43 @@
 ﻿    
         <div class="register-box-body">
             <p class="login-box-msg">Register a new membership</p>
-            <form method="post">
+            <form name="member">
                 <div class="form-group has-feedback">
-                    <input type="text" class="form-control" data-ng-model="UserName" placeholder="First name">
+                    <input type="text" class="form-control" data-ng-model="member.FirstName" required placeholder="First name">
                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
-                    <input type="text" class="form-control" data-ng-model="UserName" placeholder="Last name">
+                    <input type="text" class="form-control" data-ng-model="member.LastName" required placeholder="Last name">
                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
-                    <input type="text" class="form-control" data-ng-model="UserName" placeholder="User Name">
+                    <input type="text" class="form-control" data-ng-model="member.UserName" required placeholder="User Name">
                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
-                    <input type="email" class="form-control" data-ng-model="UserName" placeholder="Email">
+                    <input type="email" class="form-control" data-ng-model="member.Email" required placeholder="Email">
                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
-                    <input type="password" class="form-control" data-ng-model="UserName" placeholder="Password">
+                    <input type="password" class="form-control" data-ng-model="member.Password" required placeholder="Password">
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
-                    <input type="password" class="form-control" data-ng-model="UserName" placeholder="Retype password">
+                    <input type="password" class="form-control" data-ng-change="confirm()" data-ng-model="member.ConfirmPassword" required placeholder="Retype password">
                     <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
                 </div>
                 <div style="color:red" data-ng-hide="message == ''">
                     {{message}}
                 </div>
+                <div style="color:blue" data-ng-hide="success == ''">
+                    {{success}}
+                </div>
+                
                 <div class="row">
                     <div class="col-xs-8"></div>
 
                     <div class="col-xs-4">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
+                        <button type="submit" data-ng-click="register(member)" class="btn btn-primary btn-block btn-flat">Register</button>
                     </div>
 
                 </div>

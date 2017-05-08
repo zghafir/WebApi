@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Net.Mail;
 using System.Net;
 using LogIn.API.Services;
+using System.Web.Http.ModelBinding;
 
 namespace LogIn.API.Controllers
 {
@@ -17,14 +18,39 @@ namespace LogIn.API.Controllers
     public class AccountsController : BaseApiController
     {
 
+        [Authorize]
+        [Route("user/{id:guid}", Name = "GetUserById")]
+        public async Task<IHttpActionResult> GetUser(string Id)
+        {
+            //Only SuperAdmin or Admin can delete users (Later when implement roles)
+            var user = await this.AppUserManagger.FindByIdAsync(Id);
+
+            if (user != null)
+            {
+                return Ok(this.TheModelFactory.Create(user));
+            }
+
+            return NotFound();
+
+        }
 
         [AllowAnonymous]
         [Route("create")]
         public async Task<IHttpActionResult> CreateUser(CreateUserBindingModel createUserModel)
         {
-
             if (!ModelState.IsValid)
             {
+                string msg = "";
+
+                foreach (ModelState error in ModelState.Values)
+                {
+                    foreach (ModelError item in error.Errors)
+                    {
+                        msg += item.ErrorMessage + " , "; 
+                    }
+                    
+                }
+                ModelState.AddModelError("msg", msg);
                 return BadRequest(ModelState);
             }
 
@@ -49,16 +75,21 @@ namespace LogIn.API.Controllers
 
             var callbackUrl = new Uri(Url.Link("ConfirmEmailRoute", new { userId = user.Id, code = code }));
 
+            
+            try
+            {
+                EmailService service = new EmailService();
+                var body = "Merci de confirmer votre compte en cliquant sur le lien : " + callbackUrl;
+                await service.sendmail("confirmer votre compte", body, user.Email);
 
-
-            EmailService service = new EmailService();
-            var body = "Please confirm your account by clicking < a href =\"" + callbackUrl + "\">here</a>";
-            await service.sendmail("Confirm your account", body, user.Email);
-            //await service.sendmail("", "",);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
             Uri locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
 
             return Created(locationHeader, TheModelFactory.Create(user));
-
         }
 
         [AllowAnonymous]
@@ -76,6 +107,7 @@ namespace LogIn.API.Controllers
 
             if (result.Succeeded)
             {
+                
                 return Ok();
             }
             else
@@ -84,125 +116,43 @@ namespace LogIn.API.Controllers
             }
         }
 
-        [Authorize]
-        [Route("ChangePassword")]
-        public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
+        [AllowAnonymous]
+        [Route("passPerdu")]
+        public async Task<IHttpActionResult> ChangePassword(PassperdudBindingModel model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
-            }
-
-            IdentityResult result = await this.AppUserManagger.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
-
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
-
-            return Ok();
-        }
-
-        [Authorize]
-        [Route("user/{id:guid}/roles")]
-        [HttpPut]
-        public async Task<IHttpActionResult> AssignRolesToUser([FromUri] string id, [FromBody] string[] rolesToAssign)
-        {
-
-            var appUser = await this.AppUserManagger.FindByIdAsync(id);
-
-            if (appUser == null)
-            {
-                return NotFound();
-            }
-
-            var currentRoles = await this.AppUserManagger.GetRolesAsync(appUser.Id);
-
-            var rolesNotExists = rolesToAssign.Except(this.AppRoleManager.Roles.Select(x => x.Name)).ToArray();
-
-            if (rolesNotExists.Count() > 0)
-            {
-
-                ModelState.AddModelError("", string.Format("Roles '{0}' does not exixts in the system", string.Join(",", rolesNotExists)));
-                return BadRequest(ModelState);
-            }
-
-            IdentityResult removeResult = await this.AppUserManagger.RemoveFromRolesAsync(appUser.Id, currentRoles.ToArray());
-
-            if (!removeResult.Succeeded)
-            {
-                ModelState.AddModelError("", "Failed to remove user roles");
-                return BadRequest(ModelState);
-            }
-
-            IdentityResult addResult = await this.AppUserManagger.AddToRolesAsync(appUser.Id, rolesToAssign);
-
-            if (!addResult.Succeeded)
-            {
-                ModelState.AddModelError("", "Failed to add user roles");
-                return BadRequest(ModelState);
-            }
-
-            return Ok();
-
-        }
-
-        [Authorize]
-        [Route("user/{id:guid}/assignclaims")]
-        [HttpPut]
-        public async Task<IHttpActionResult> AssignClaimsToUser([FromUri] string id, [FromBody] List<ClaimBindingModel> claimsToAssign)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var appUser = await this.AppUserManagger.FindByIdAsync(id);
-
-            if (appUser == null)
-            {
-                return NotFound();
-            }
-
-            foreach (ClaimBindingModel claimModel in claimsToAssign)
-            {
-                if (appUser.Claims.Any(c => c.ClaimType == claimModel.Type))
+                string msg = "";
+                foreach (ModelState error in ModelState.Values)
                 {
+                    foreach (ModelError item in error.Errors)
+                    {
+                        msg += item.ErrorMessage + " , ";
+                    }
 
-                    await this.AppUserManagger.RemoveClaimAsync(id, ExtendedClaimsProvider.CreateClaim(claimModel.Type, claimModel.Value));
                 }
-
-                await this.AppUserManagger.AddClaimAsync(id, ExtendedClaimsProvider.CreateClaim(claimModel.Type, claimModel.Value));
-            }
-
-            return Ok();
-        }
-
-        [Authorize]
-        [Route("user/{id:guid}/removeclaims")]
-        [HttpPut]
-        public async Task<IHttpActionResult> RemoveClaimsFromUser([FromUri] string id, [FromBody] List<ClaimBindingModel> claimsToRemove)
-        {
-
-            if (!ModelState.IsValid)
-            {
+                ModelState.AddModelError("msg", msg);
                 return BadRequest(ModelState);
             }
+            var user = await this.AppUserManagger.FindByEmailAsync(model.Email);
 
-            var appUser = await this.AppUserManagger.FindByIdAsync(id);
-
-            if (appUser == null)
+            if (user == null || !(await this.AppUserManagger.IsEmailConfirmedAsync(user.Id)))
             {
-                return NotFound();
+                return Ok();
             }
 
-            foreach (ClaimBindingModel claimModel in claimsToRemove)
+            try
             {
-                if (appUser.Claims.Any(c => c.ClaimType == claimModel.Type))
-                {
-                    await this.AppUserManagger.RemoveClaimAsync(id, ExtendedClaimsProvider.CreateClaim(claimModel.Type, claimModel.Value));
-                }
+                var code = await this.AppUserManagger.GeneratePasswordResetTokenAsync(user.Id);
+
+                EmailService service = new EmailService();
+                var body = "votre pass est : " + code ;
+                await service.sendmail("Reset Password", body, user.Email);
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
             }
 
             return Ok();

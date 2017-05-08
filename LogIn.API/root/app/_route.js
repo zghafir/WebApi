@@ -16,12 +16,14 @@ app.config(function ($routeProvider) {
         templateUrl: "/root/app/view/login.html"
     });
     $routeProvider.when("/NewMember", {
-        controller: "NewMemberController",
+        controller: "newMemberController",
         templateUrl: "/root/app/view/addMember.html"
     });
-    $routeProvider.when("/myInfo", {
-        templateUrl: "/root/app/view/addMember.html"
+    $routeProvider.when("/passPerdu", {
+        controller: "passPerduController",
+        templateUrl: "/root/app/view/getPass.html"
     });
+    
 
     $routeProvider.otherwise({ redirectTo: "/login" });
 

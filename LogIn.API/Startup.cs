@@ -48,7 +48,8 @@ namespace LogIn.API
                 TokenEndpointPath = new PathString("/oauth/token"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
                 Provider = new CustomOAuthProvider(),
-                AccessTokenFormat = new CustomJwtFormat("http://localhost:59822")
+                AccessTokenFormat = new CustomJwtFormat("http://localhost:59822") 
+
             };
 
             // OAuth 2.0 Bearer Access Token Generation
@@ -58,7 +59,8 @@ namespace LogIn.API
         private void ConfigureOAuthTokenConsumption(IAppBuilder app)
         {
 
-            var issuer = "http://localhost:59822";
+            var issuer = "http://localhost:59822"; //    "http://loginwebapi.somee.com"
+
             string audienceId = ConfigurationManager.AppSettings["as:AudienceId"];
             byte[] audienceSecret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings["as:AudienceSecret"]);
 

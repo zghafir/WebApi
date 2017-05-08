@@ -136,16 +136,18 @@
   <ItemGroup>
     <Content Include="Index.html" />
     <Content Include="root\app\controllers\homeController.js" />
-    <Content Include="root\app\controllers\indexController.js" />
     <Content Include="root\app\controllers\loginController.js" />
     <Content Include="root\app\controllers\NewMemberController.js" />
+    <Content Include="root\app\controllers\passPerduController.js" />
+    <Content Include="root\app\controllers\ResetPassController.js" />
     <Content Include="root\app\services\AuthData.js" />
     <Content Include="root\app\services\AuthenticationService.js" />
     <Content Include="root\app\services\loginService.js" />
     <Content Include="root\app\view\addMember.html" />
     <Content Include="root\app\view\home.html" />
     <Content Include="root\app\view\login.html" />
-    <Content Include="root\app\view\newPass.html" />
+    <Content Include="root\app\view\getPass.html" />
+    <Content Include="root\app\view\ResetPass.html" />
     <Content Include="root\app\_route.js" />
     <Content Include="root\css\css\AdminLTE.css" />
     <Content Include="root\css\css\AdminLTE.min.css" />
@@ -225,23 +227,17 @@
     <Compile Include="AppConfig\ApplicationRoleManager.cs" />
     <Compile Include="AppConfig\ApplicationUser.cs" />
     <Compile Include="AppConfig\ApplicationUserManager.cs" />
-    <Compile Include="AppConfig\ClaimsAuthorizationAttribute.cs" />
     <Compile Include="AppConfig\ExtendedClaimsProvider.cs" />
     <Compile Include="AppConfig\LogInDBContext.cs" />
-    <Compile Include="AppConfig\RolesFromClaims.cs" />
     <Compile Include="Controllers\AccountsController .cs" />
     <Compile Include="Controllers\BaseApiController.cs" />
-    <Compile Include="Controllers\ClaimsController.cs" />
-    <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Migrations\201705050818049_add_tables.cs" />
     <Compile Include="Migrations\201705050818049_add_tables.Designer.cs">
       <DependentUpon>201705050818049_add_tables.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
-    <Compile Include="Models\ClaimBindingModel.cs" />
     <Compile Include="Models\ModelFactory.cs" />
-    <Compile Include="Models\RoleBindingModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomJwtFormat.cs" />
     <Compile Include="Providers\CustomOAuthProvider.cs" />

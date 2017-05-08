@@ -12,7 +12,7 @@
             var data = "grant_type=password&username=" + userName + "&password=" + password;
             $http.post(loginServiceURL + "oauth/token", data, {
                 headers:
-                   { 'Content-Type': 'application/json' }
+                   { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
             }).success(function (response) {
                 userInfo = {
                     accessToken: response.access_token,
@@ -37,6 +37,42 @@
             authData.authenticationData.IsAuthenticated = false;
             authData.authenticationData.fullname = "";
         }
+
+        this.register = function (member) {
+            debugger;
+            deferred = $q.defer();
+            var data = member;
+            $http.post(loginServiceURL + "api/accounts/create", data, {
+                headers:
+                   { 'Content-Type': 'application/json'}
+            }).success(function (response) {
+                
+                deferred.resolve(null);
+            })
+            .error(function (err, status) {
+                deferred.resolve(err);
+            });
+            return deferred.promise;
+        }
+
+        this.getpass = function (member) {
+            debugger;
+            deferred = $q.defer();
+            var data = member;
+            $http.post(loginServiceURL + "api/accounts/passPerdu", data, {
+                headers:
+                   { 'Content-Type': 'application/json' }
+            }).success(function (response) {
+
+                deferred.resolve(null);
+            })
+            .error(function (err, status) {
+                deferred.resolve(err);
+            });
+            return deferred.promise;
+        }
+
+        
     }
     ]);
 })();

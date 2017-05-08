@@ -21,9 +21,10 @@ namespace LogIn.API.Services
             message.To.Add(to);
             message.Subject = subject;
             message.Body = body;
-            message.From = new MailAddress("ghzeggaf@gmail.com", "zeggaf");
+            message.From = new MailAddress("ghzeggaf@gmail.com", "LogIn");
             SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
             smtp.EnableSsl = true;
+            smtp.Timeout = 10000;
             smtp.UseDefaultCredentials = false;
             smtp.Credentials = new NetworkCredential("ghzeggaf@gmail.com", "ghzeggaf11472");
             smtp.Send(message);

@@ -7,7 +7,8 @@
             password: ""
         };
         
-        $scope.login = function () {
+        $scope.login = function (form) {
+            if (form.$valid)
             loginService.login($scope.loginData.userName, $scope.loginData.password).then(function (response) {
                 if (response != null && response.error != undefined) {
                     $scope.message = response.error_description;
@@ -23,7 +24,10 @@
             $location.path('/NewMember');
         }
 
-
+        $scope.GoTopass = function () {
+            debugger;
+            $location.path('/passPerdu');
+        }
 
 
 

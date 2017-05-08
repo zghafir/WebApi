@@ -4,7 +4,7 @@ app.factory('authData', [ function () {
 
     var _authentication = {
         IsAuthenticated: false,
-        userName: ""
+        fullname: ""
     };
     authDataFactory.authenticationData = _authentication;
 

@@ -2,6 +2,7 @@
 using LogIn.API.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,15 +62,17 @@ namespace LogIn.API.Controllers
             {
                 if (result.Errors != null)
                 {
+                    string msg = "" ;
+
                     foreach (string error in result.Errors)
                     {
-                        ModelState.AddModelError("", error);
+                        msg += error + ",";
                     }
+                    ModelState.AddModelError("msg", msg);
                 }
 
                 if (ModelState.IsValid)
                 {
-                    // No ModelState errors are available to send, so just return an empty BadRequest.
                     return BadRequest();
                 }
 
