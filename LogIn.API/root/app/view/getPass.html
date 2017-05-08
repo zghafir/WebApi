@@ -1,0 +1,28 @@
+﻿<div class="login-box-body">
+            <p class="login-box-msg">get your Password</p>
+            <form name="pass">
+                <div class="form-group has-feedback">
+                    <input type="text" class="form-control" data-ng-model="pass.Email" placeholder="Email"  required>
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+                
+                <div style="color:red" data-ng-hide="message == ''">
+                    {{message}}
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+
+
+                    </div>
+                    <div class="col-xs-4">
+                        <button type="submit" data-ng-click="getpass(pass)" class="btn btn-primary btn-block btn-flat">Go</button>
+                    </div>
+                </div>
+                
+            </form>
+    <div class="row" style="text-align:center">
+        <a href="" data-ng-click="GoTologin()" class="text-center">Sign In</a>
+
+    </div>
+
+</div>

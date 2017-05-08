@@ -144,9 +144,9 @@
     <Content Include="root\app\services\AuthenticationService.js" />
     <Content Include="root\app\services\loginService.js" />
     <Content Include="root\app\view\addMember.html" />
+    <Content Include="root\app\view\getPass.html" />
     <Content Include="root\app\view\home.html" />
     <Content Include="root\app\view\login.html" />
-    <Content Include="root\app\view\getPass.html" />
     <Content Include="root\app\view\ResetPass.html" />
     <Content Include="root\app\_route.js" />
     <Content Include="root\css\css\AdminLTE.css" />
