@@ -55,7 +55,7 @@
             return deferred.promise;
         }
 
-        this.getpass = function (member) {
+        this.passperd = function (member) {
             debugger;
             deferred = $q.defer();
             var data = member;
@@ -71,6 +71,25 @@
             });
             return deferred.promise;
         }
+
+        this.Reset = function (object) {
+            debugger;
+            deferred = $q.defer();
+            var data = object;
+            $http.post(loginServiceURL + "api/accounts/ResetPassword", data, {
+                headers:
+                   { 'Content-Type': 'application/json' }
+            }).success(function (response) {
+
+                deferred.resolve(null);
+            })
+            .error(function (err, status) {
+                deferred.resolve(err);
+            });
+            return deferred.promise;
+        }
+
+        
 
         
     }

@@ -11,6 +11,8 @@ using System.Net.Mail;
 using System.Net;
 using LogIn.API.Services;
 using System.Web.Http.ModelBinding;
+using System.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace LogIn.API.Controllers
 {
@@ -118,7 +120,7 @@ namespace LogIn.API.Controllers
 
         [AllowAnonymous]
         [Route("passPerdu")]
-        public async Task<IHttpActionResult> sendPassword(PassperdudBindingModel model)
+        public async Task<IHttpActionResult> passPerdu(PassperdudBindingModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -134,6 +136,16 @@ namespace LogIn.API.Controllers
                 ModelState.AddModelError("msg", msg);
                 return BadRequest(ModelState);
             }
+
+            var client = new WebClient();
+            var result = client.DownloadString(string.Format("https://www.google.com/recaptcha/api/siteverify?secret={0}&response={1}",
+                ConfigurationManager.AppSettings["as:reCaptchaSecret"], model.Code));
+            var obj = JObject.Parse(result);
+            var status = (bool)obj.SelectToken("success");
+            if (!status)
+            {
+                return BadRequest();
+            }
             var user = await this.AppUserManagger.FindByEmailAsync(model.Email);
 
             if (user == null || !(await this.AppUserManagger.IsEmailConfirmedAsync(user.Id)))
@@ -145,7 +157,7 @@ namespace LogIn.API.Controllers
             {
                 var code = await this.AppUserManagger.GeneratePasswordResetTokenAsync(user.Id);
 
-                var callbackUrl = new Uri(Url.Link("ChangePassword", new { userId = user.Id, code = code }));
+                var callbackUrl = new Uri(Url.Link("ResetPassword", new { userId = user.Id, code = code }));
                 
 
                 EmailService service = new EmailService();
@@ -161,23 +173,25 @@ namespace LogIn.API.Controllers
             return Ok();
         }
 
-        [Authorize]
-        [Route("ChangePassword")]
-        public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
+        [AllowAnonymous]
+        [Route("ResetPassword")]
+        public async Task<IHttpActionResult> ResetPassword(ResetPasswordBindingModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            IdentityResult result = await this.AppUserManagger.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
-
-            if (!result.Succeeded)
+            var user = await AppUserManagger.FindByEmailAsync(model.Email);
+            if (user == null)
             {
-                return GetErrorResult(result);
+                return BadRequest();
             }
-
-            return Ok();
+            var result = await AppUserManagger.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+            return InternalServerError();
         }
 
 

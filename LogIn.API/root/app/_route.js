@@ -24,6 +24,11 @@ app.config(function ($routeProvider) {
         controller: "passPerduController",
         templateUrl: "/root/app/view/getPass.html"
     });
+
+    $routeProvider.when("/ResetPass", {
+        controller: "ResetPassController",
+        templateUrl: "/root/app/view/ResetPassword.html"
+    });
     
 
     $routeProvider.otherwise({ redirectTo: "/login" });

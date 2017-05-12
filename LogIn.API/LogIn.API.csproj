@@ -147,7 +147,7 @@
     <Content Include="root\app\view\getPass.html" />
     <Content Include="root\app\view\home.html" />
     <Content Include="root\app\view\login.html" />
-    <Content Include="root\app\view\ResetPass.html" />
+    <Content Include="root\app\view\ResetPassword.html" />
     <Content Include="root\app\_route.js" />
     <Content Include="root\css\css\AdminLTE.css" />
     <Content Include="root\css\css\AdminLTE.min.css" />
@@ -210,6 +210,7 @@
     <Content Include="root\css\js\demo.js" />
     <Content Include="root\lib\angular\angular-animate.js" />
     <Content Include="root\lib\angular\angular-local-storage.min.js" />
+    <Content Include="root\lib\angular\angular-recaptcha.js" />
     <Content Include="root\lib\angular\angular-recaptcha.min.js" />
     <Content Include="root\lib\angular\angular-resource.js" />
     <Content Include="root\lib\angular\angular-route.js" />

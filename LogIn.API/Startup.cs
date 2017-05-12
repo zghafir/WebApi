@@ -59,7 +59,7 @@ namespace LogIn.API
         private void ConfigureOAuthTokenConsumption(IAppBuilder app)
         {
 
-            var issuer = "http://localhost:59822"; //    "http://loginwebapi.somee.com"
+            var issuer = "http://localhost:59822"; //"http://localhost:59822 http://loginwebapi.somee.com"
 
             string audienceId = ConfigurationManager.AppSettings["as:AudienceId"];
             byte[] audienceSecret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings["as:AudienceSecret"]);
